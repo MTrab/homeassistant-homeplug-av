@@ -1,0 +1,49 @@
+{
+	"name": "Homeplug-AV",
+	"image": "mcr.microsoft.com/devcontainers/python:3.13-bookworm",
+	"postCreateCommand": "scripts/setup",
+	"appPort": [
+		"9123:8123"
+	],
+	"portsAttributes": {
+		"8123": {
+			"label": "Home Assistant - Homeplug-AV",
+			"onAutoForward": "notify",
+      		"protocol": "http"
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"github.vscode-pull-request-github",
+				"ryanluker.vscode-coverage-gutters",
+				"ms-python.vscode-pylance",
+				"ms-python.isort",
+				"ms-python.black-formatter",
+				"GitHub.copilot"
+			],
+			"settings": {
+				"files.eol": "\n",
+				"editor.tabSize": 4,
+				"terminal.integrated.shell.linux": "/bin/bash",
+				"python.defaultInterpreterPath": "/usr/bin/python3",
+				"python.analysis.autoSearchPaths": false,
+				"python.linting.pylintEnabled": true,
+				"python.linting.enabled": true,
+				"python.formatting.provider": "black",
+				"editor.formatOnPaste": false,
+				"editor.formatOnSave": true,
+				"editor.formatOnType": true,
+				"files.trimTrailingWhitespace": true
+			}
+		}
+	},
+	"remoteUser": "root",
+	"features": {
+		"ghcr.io/devcontainers/features/rust:1": {}
+	},
+	"mounts": [
+		"source=${localWorkspaceFolder}/config,target=/config,type=bind,consistency=cached"
+	]
+}

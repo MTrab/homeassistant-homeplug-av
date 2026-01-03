@@ -3,16 +3,14 @@
 from __future__ import annotations
 
 import logging
+import socket
 from typing import Any, List, Tuple
 
 import voluptuous as vol
-
 from homeassistant import config_entries
 from homeassistant.core import callback
 
 from .const import DOMAIN
-
-import socket
 
 try:
     import psutil  # type: ignore
@@ -20,9 +18,9 @@ except ImportError:  # pragma: no cover - psutil is part of HA deps
     psutil = None  # type: ignore
 
 from homeassistant.helpers.selector import (
+    SelectOptionDict,
     SelectSelector,
     SelectSelectorConfig,
-    SelectOptionDict,
     SelectSelectorMode,
 )
 
@@ -75,6 +73,11 @@ class HomeplugAVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
+    @callback
+    def async_get_options_flow(config_entry: config_entries.ConfigFlow):
+        """Return the options flow handler."""
+        return HomeplugAVOptionsFlowHandler()
+
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> config_entries.ConfigFlowResult:
@@ -106,17 +109,9 @@ class HomeplugAVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user", data_schema=data_schema, errors=errors
         )
 
-    @callback
-    def async_get_options_flow(self, config_entry):
-        """Return the options flow handler."""
-        return HomeplugAVOptionsFlowHandler(config_entry)
-
 
 class HomeplugAVOptionsFlowHandler(config_entries.OptionsFlow):
     """Handle options for a config entry."""
-
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        self.config_entry = config_entry
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
